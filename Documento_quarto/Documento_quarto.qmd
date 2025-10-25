@@ -1,0 +1,44 @@
+---
+title: "Documento_quarto"
+df-print: paged 
+format: html
+---
+
+```{r}
+#| echo: true 
+#| eval: false 
+#| fig-align: center 
+library(ggplot2) 
+ggplot(airquality, aes(Temp, Ozone))+ 
+  geom_point() +
+  geom_smooth(method = "loess") +
+  labs(x = "Temperatura (°F)", y = "Ozônio (ppb)") +
+  theme_minimal() 
+
+```
+
+A média é `{r} mean(rnorm(100))`
+
+No R a média é calculada com a função `mean()`
+
+# Introdução
+
+![Logo do Quarto](quarto.png)
+
+* item 1
+* item 2
+    * subitem 1
+
+
+| variável | valor |
+|:--------:|:------|
+|idade | 20 |
+|altura| 180 |
+
+
+O quadrado é $x^2$
+
+O quadrado é $$x^2$$
+
+
+

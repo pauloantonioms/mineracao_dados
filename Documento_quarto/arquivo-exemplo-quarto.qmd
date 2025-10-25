@@ -1,0 +1,110 @@
+---
+title: "Um Exemplo Prático com Quarto: A Distribuição de Poisson"
+author: "Prof. Dr. Sadraque E. F. Lucena"
+lang: pt         # Língua: português
+format: docx
+bibliography: referencias.bib
+df-print: paged  # Como data frames aparecem no documento
+                 # opções: "default", "kable", "tibble" e "paged"
+csl: abnt.csl    # referências no formato da ABNT
+---
+
+Este é um arquivo usado como exemplo na disciplina ESTAT0109 - Mineração de Dados em Estatística, com o intuito de explorar a aplicação do Quarto, uma ferramenta de publicação técnica de código aberto projetada para auxiliar os cientistas de dados na compartilhamento de suas análises. Como exemplo, realizaremos uma breve exploração da distribuição de Poisson.
+
+## A distribuição de Poisson
+
+A distribuição de Poisson é uma distribuição de probabilidade discreta que descreve o número de eventos que ocorrem em um intervalo fixo de tempo ou espaço. A distribuição de Poisson é frequentemente utilizada em problemas do mundo real, como prever o número de chamadas recebidas em um *call center* em uma hora, o número de defeitos em um lote de produtos, ou a contagem de eventos raros em geral.
+
+## A Fórmula Matemática
+
+
+De acordo com @magalhaes2006probabilidade, seja $X$ uma variável aleatória com distribuição de Poisson [@magalhaes2006probabilidade] com parâmetro $\lambda$, denotada como $X\sim Poisson(\lambda)$. A função de probabilidade de $X$ é então dada por [@morettin2017estatistica]
+
+$$
+  P(X=x) = \frac{e^{-\lambda}\lambda^x}{x!},
+$$
+onde:
+
+* $e$ é a função exponencial;
+* $x$ é o número de ocorrências de um evento ($x=0, 1, 2, \ldots$).
+* $\lambda$ (lambda) é um número real positivo que representa a média de ocorrências no intervalo especificado.
+
+
+## Exemplo Prático de Aplicação
+
+Vamos imaginar algumas situações onde a Poisson se aplica. A @tbl-letters, criada com a sintaxe simples do Markdown, nos dá alguns exemplos:
+
+| Fenômeno Observado                                       | Intervalo         | Valor de Lambda ($\lambda$) |
+|----------------------------------------------------------|:-------------------:|-----------------------------:|
+| Carros passando por um cruzamento                        | 1 minuto         | 10                          |
+| Erros de digitação em uma página de um livro             | Por página        | 2                           |
+| Gols marcados em uma partida de futebol                  | Por partida       | 2.5                         |
+: Exemplos de aplicação da distribuição de Poisson. {#tbl-letters}
+
+
+## Simulando e Visualizando Dados da Poisson em R
+
+Agora, a mágica do Quarto: vamos usar um bloco (*chunk*) de código R para simular dados de uma distribuição de Poisson e visualizá-los. Vamos simular 1000 observações de uma Poisson com $\lambda = 5$. Usaremos o pacote `ggplot2` para criar um histograma elegante.
+
+```{r}
+#| echo: true
+#| eval: true
+#| label: fig-gerar-e-plotar-poisson
+#| fig-cap: "Histograma de 1000 valores simulados de uma distribuição de Poisson com lambda = 5."
+#| warning: false # Esta opção esconde avisos do console, deixando o documento mais limpo.
+
+# 1. Carregar o pacote ggplot2 para visualização
+library(ggplot2)
+
+# 2. Definir o nosso parâmetro lambda
+lambda_valor <- 5
+
+# 3. Gerar 1000 números aleatórios de uma distribuição Poisson
+dados_poisson <- rpois(n = 1000, lambda = lambda_valor)
+
+# 4. Criar o histograma
+ggplot(data = data.frame(dados = dados_poisson), aes(x = dados)) +
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black", alpha = 0.8) +
+  labs(
+    title = "Distribuição de 1000 Observações de uma Poisson",
+    subtitle = paste("Lambda (taxa média) =", lambda_valor),
+    x = "Número de Eventos (x)",
+    y = "Frequência"
+  ) +
+  theme_minimal()
+```
+
+Como podemos ver na @fig-gerar-e-plotar-poisson, a maior parte dos nossos dados se concentra em torno do valor de lambda, que é 5.
+
+## Tabela de Estatísticas Descritivas
+
+Para complementar nossa análise, podemos criar uma tabela de resumo profissional dos dados simulados. Usaremos o pacote `gtsummary`, que é fantástico para criar tabelas prontas para publicação com um código muito simples.
+
+```{r}
+#| label: tbl-resumo
+#| echo: true # Vamos mostrar o código para que todos possam aprender.
+
+library(knitr)
+resumo_df <- data.frame(
+  "Estatística" = c("Tamanho da Amostra (n)",
+                  "Valor Mínimo",
+                  "Valor Máximo",
+                  "Média",
+                  "Variância"),
+  Valor = c(
+    length(dados_poisson),
+    min(dados_poisson),
+    max(dados_poisson),
+    mean(dados_poisson),
+    var(dados_poisson)
+  )
+)
+kable(resumo_df,
+      caption = "Estatísticas Descritivas dos Dados Simulados",
+      digits = 2)
+```
+
+A @tbl-resumo acima confirma o que esperávamos: a média e a variância dos nossos dados simulados são muito próximas de $\lambda=5$.
+
+
+# Referências
